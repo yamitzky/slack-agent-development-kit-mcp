@@ -55,7 +55,7 @@ async def reaction_middleware(
         except Exception as e:
             logger.error(e)
 
-    context["done"] = remove_reaction
+    context["finish"] = remove_reaction
 
     await next()
 
@@ -93,7 +93,7 @@ async def agent_middleware(
 
     # メンションもされていないし作成もされていない場合は、スルー
     if not is_app_mention and not session:
-        logger.info("Ignoring because not app mention and not session")
+        logger.info("Ignoring because no app mention and no session")
         return BoltResponse(status=200)
 
     # メンションされているがセッションがない場合は、作成、補完する
@@ -103,6 +103,7 @@ async def agent_middleware(
             app_name=APP_NAME, user_id=channel_id, session_id=thread_ts
         )
         # スレッドがある場合は、スレッドを元に過去の会話を補完する
+        # 適切にセッションが永続化されている場合は不要な処理だが、今回はインメモリのセッションを使用しているため、補完するようにしている。
         if message.get("thread_ts"):
             try:
                 logger.info(f"Getting thread history for {thread_ts}")
@@ -148,7 +149,7 @@ async def message_handler(
     session: Session,
     text: str,
     logger: Logger,
-    done,
+    finish,
 ):
     content = Content(role="user", parts=[Part(text=text)])
     final_response_text = "Error"
@@ -171,7 +172,7 @@ async def message_handler(
         thread_ts=thread_ts,
     )
 
-    await done()
+    await finish()
 
 
 async def main():
@@ -195,6 +196,5 @@ async def main():
     await exit_stack.aclose()
 
 
-# アプリを起動します
 if __name__ == "__main__":
     asyncio.run(main())

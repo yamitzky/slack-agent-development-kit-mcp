@@ -71,3 +71,10 @@ uv run python slack_agent/app.py
 
 *   `.env` ファイルに `SLACK_APP_TOKEN` が設定されている場合、**Socket Mode** で起動します。
 *   `SLACK_APP_TOKEN` が設定されていない場合、**HTTP Mode** で起動します (デフォルトポート: 3000)。HTTP Mode を使用するには、Slack アプリ設定で Request URL の設定が必要です。
+
+
+または、 `adk web` でエージェントの動作確認をすることもできます。
+
+```bash
+uv run adk web
+```
