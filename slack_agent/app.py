@@ -41,7 +41,7 @@ async def reaction_middleware(
     try:
         logger.info("Adding reaction")
         await client.reactions_add(
-            channel=channel_id, name="loading", timestamp=event["ts"]
+            channel=channel_id, name="eyes", timestamp=event["ts"]
         )
     except Exception as e:
         logger.error(e)
@@ -50,7 +50,7 @@ async def reaction_middleware(
         try:
             logger.info("Removing reaction")
             await client.reactions_remove(
-                channel=channel_id, name="loading", timestamp=event["ts"]
+                channel=channel_id, name="eyes", timestamp=event["ts"]
             )
         except Exception as e:
             logger.error(e)
